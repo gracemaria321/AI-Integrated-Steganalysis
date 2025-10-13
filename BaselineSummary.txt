@@ -1,0 +1,41 @@
+Baseline Title: “AI-Powered Steganographic Techniques: A Comparison of Traditional Methods and Modern Machine Learning Approaches”
+Presented: 2024 ICORIS conference
+Authors: 
+
+Purpose of the Study
+The paper compares traditional steganography techniques—like Least Significant Bit (LSB) and Discrete Cosine Transform (DCT)—with 
+modern AI-based methods, specifically Convolutional Neural Networks (CNNs) and Generative Adversarial Networks (GANs). The goal is 
+to evaluate their effectiveness in hiding data within images while resisting detection. 
+
+Methods Compared
+Technique   Description                                     Strengths                                   Weaknesses
+---------   ------------------------------------------      -----------------------------------------   -----------------------------------
+LSB         Embeds data in the least significant bits       Simple, low distortion                      Easily detectable, format-sensitive
+            of image pixels
+DCT         Embeds data in frequency domain coefficients    High image fidelity, robust to compression  Computationally heavier
+CNN         Learns patterns for embedding and detecting     Adaptive, good concealment                  Requires training, moderate quality
+            hidden data
+GAN         Generator-discriminator model creates           High resistance to detection                Lower image quality, resource-intensive
+            realistic stego-images
+
+Evaluation Metrics
+* PSNR (Peak Signal-to-Noise Ratio): Measures image quality after embedding
+* SSIM (Structural Similarity Index): Assesses structural similarity to original image
+* Detection Accuracy: Measures how easily hidden data can be detected
+
+Key Findings
+* DCT had the highest PSNR (up to 96.954) and SSIM (near 1.0), making it best for maintaining image quality.
+* GANs produced realistic images with moderate PSNR (8.341–14.740) and SSIM (0.199–0.812), but excelled in detection evasion.
+* CNNs showed stable detection accuracy (~43%) and better performance on PNG images than JPG.
+* LSB varied widely in quality and detection accuracy, with PNG outperforming JPG.
+
+Experimental Setup
+* Used a sneaker image dataset in JPG and PNG formats.
+* Embedded binary messages using each method.
+* Evaluated visual quality and detection resistance using machine learning classifiers.
+
+Conclusions
+* DCT is ideal for high-quality image preservation and accurate detection.
+* GANs and CNNs offer better stealth but require more computational power.
+* PNG format consistently outperformed JPG in preserving quality and resisting detection.
+* The choice of method should balance image fidelity, detection resistance, and computational cost.
