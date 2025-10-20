@@ -1,4 +1,4 @@
-# AI-Integrated-Steganalysis-
+# AI-Integrated-Steganalysis
 Research Project on AI integrated Steganography
 
 Title: A Comparative Study of AI-Driven Steganalysis Tools: Performance, Precision, and Pitfalls

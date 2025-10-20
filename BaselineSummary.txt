@@ -1,6 +1,6 @@
 Baseline Title: “AI-Powered Steganographic Techniques: A Comparison of Traditional Methods and Modern Machine Learning Approaches”
 Presented: 2024 ICORIS conference
-Authors: 
+Authors: Indrawan Ady Saputro, Moch. Hari Purwidiantoro, Febrianta Surya Nugraha, Ina Sholihah Widiati, Sri Widiyanti
 
 Purpose of the Study
 The paper compares traditional steganography techniques—like Least Significant Bit (LSB) and Discrete Cosine Transform (DCT)—with 
