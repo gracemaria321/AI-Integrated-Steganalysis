@@ -25,3 +25,17 @@ def compute_psnr(original_path, stego_path):
     stego = np.array(Image.open(stego_path).convert("RGB"))
     value = psnr(original, stego)
     print(f"PSNR: {value:.2f} dB")
+
+    # -----------------------
+# Detection Accuracy
+# -----------------------
+def detection_accuracy(original_message, decoded_message):
+    correct = sum(o == d for o, d in zip(original_message, decoded_message))
+    return (correct / len(original_message)) * 100
+
+# -----------------------
+# Main GAN Stego Workflow
+# -----------------------
+
+# Load the GAN model
+model = SteganoGAN.load(architecture='dense', epoch=50)
