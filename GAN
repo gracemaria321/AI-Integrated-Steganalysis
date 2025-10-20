@@ -39,3 +39,24 @@ def detection_accuracy(original_message, decoded_message):
 
 # Load the GAN model
 model = SteganoGAN.load(architecture='dense', epoch=50)
+
+# File paths
+cover_image = "cover.png"
+stego_image = "stego.png"
+secret_message = "Hello Ramsha Rizwan!"
+
+# Hide the message
+model.encode_image(cover_image, stego_image, secret_message)
+print("Message hidden!")
+
+# Reveal the message
+decoded_message = model.decode_image(stego_image)
+print("Decoded Message:", decoded_message)
+
+# Evaluate image quality
+compute_ssim(cover_image, stego_image)
+compute_psnr(cover_image, stego_image)
+
+# Evaluate detection accuracy
+accuracy = detection_accuracy(secret_message, decoded_message)
+print(f"Detection Accuracy: {accuracy:.2f}%")
