@@ -14,8 +14,8 @@ import os
 
 def SSIM(original, stego):    
     # Load images
-    original = Image.open("cyber.jpg").convert("RGB")
-    stego = Image.open("cyber_encoded.jpeg").convert("RGB")
+    original = Image.open("images/cyber.jpg").convert("RGB")
+    stego = Image.open("outputImages/cyber_encoded.jpeg").convert("RGB")
     
     # Convert to NumPy arrays
     original_np = np.array(original)
@@ -29,8 +29,8 @@ def SSIM(original, stego):
 
 def PSNR(original, stego): 
     # Load images
-    original = Image.open("cyber.jpg").convert("RGB")
-    stego = Image.open("cyber_encoded.jpeg").convert("RGB")
+    original = Image.open("images/cyber.jpg").convert("RGB")
+    stego = Image.open("outputImages/cyber_encoded.jpeg").convert("RGB")
     
     # Convert to NumPy arrays
     original_np = np.array(original)
@@ -76,9 +76,12 @@ def encode_lsb(image_path, message, output_path=None):
     # Determine original format
     original_format = Image.open(image_path).format
     if output_path is None:
-        base, ext = os.path.splitext(image_path)
-        output_path = f"{base}_encoded.{original_format.lower()}"
-
+        base_name = os.path.basename(image_path)
+        name, ext = os.path.splitext(base_name)
+        output_path = os.path.join("outputImages", f"{name}_encoded.{original_format.lower()}")
+        # Make sure the images/outputImages/ folder exists
+        os.makedirs("outputImages", exist_ok=True)
+    
     # Save encoded image in original format
     encoded.save(output_path, format=original_format)
     print("Message encoded and saved to", output_path)
@@ -103,10 +106,10 @@ def decode_lsb(image_path):
     return message.split(chr(0))[0]
 
 
-encode_lsb("cyber.jpg", "Hello Grace Maria!")  # This saves as .jpeg format
-SSIM("cyber.jpg", "cyber_encoded.jpeg")
-PSNR("cyber.jpg", "cyber_encoded.jpeg")
-decoded = decode_lsb("cyber_encoded.jpeg")
+encode_lsb("images/cyber.jpg", "Hello Grace Maria!")  # This saves as .jpeg format
+SSIM("images/cyber.jpg", "outputImages/cyber_encoded.jpeg")
+PSNR("images/cyber.jpg", "outputImages/cyber_encoded.jpeg")
+decoded = decode_lsb("outputImages/cyber_encoded.jpeg")
 accuracy = detection_accuracy("Hello Grace Maria!", decoded)
 print("Decoded Message:", decoded)
 print("Detection Accuracy:", accuracy)
