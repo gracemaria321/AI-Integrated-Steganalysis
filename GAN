@@ -11,9 +11,7 @@ from skimage.metrics import structural_similarity as ssim
 from skimage.metrics import peak_signal_noise_ratio as psnr
 import os
 
-# -----------------------
 # SSIM and PSNR Functions
-# -----------------------
 def compute_ssim(original_path, stego_path):
     original = np.array(Image.open(original_path).convert("RGB"))
     stego = np.array(Image.open(stego_path).convert("RGB"))
@@ -26,16 +24,12 @@ def compute_psnr(original_path, stego_path):
     value = psnr(original, stego)
     print(f"PSNR: {value:.2f} dB")
 
-    # -----------------------
+
 # Detection Accuracy
-# -----------------------
 def detection_accuracy(original_message, decoded_message):
     correct = sum(o == d for o, d in zip(original_message, decoded_message))
     return (correct / len(original_message)) * 100
 
-# -----------------------
-# Main GAN Stego Workflow
-# -----------------------
 
 # Load the GAN model
 model = SteganoGAN.load(architecture='dense', epoch=50)
