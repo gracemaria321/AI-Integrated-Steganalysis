@@ -33,3 +33,5 @@ VI. Case Studies or Applications
 VII. Conclusion
     Summary of findings
     Future outlook: evolving threats, AI advancements, legal frameworks
+
+https://www.loom.com/share/9d168152483d456aac1f6151f3d292f4
