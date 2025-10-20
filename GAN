@@ -1,0 +1,7 @@
+# -*- coding: utf-8 -*-
+"""
+GAN-based Steganography Example
+Mirrors LSB workflow with SSIM, PSNR, and detection accuracy
+"""
+
+
