@@ -60,7 +60,11 @@ def encode_lsb(image_path, message, output_path=None):
     # Convert to grayscale and compute edge map
     gray = np.array(img.convert("L"))
     edge_map = sobel(gray)
-    edge_threshold = np.percentile(edge_map, 75)  # Top 25% edge pixels
+    edge_threshold = np.percentile(edge_map, 25)  # Top 75% edge pixels
+    
+    # Check Message Too Long for Available Pixels
+    if len(msg_binary) > np.sum(edge_map >= edge_threshold):
+        print("Warning: Not enough edge pixels to embed the full message.")
 
     # Embed message in high-edge regions
     for y in range(height):
