@@ -12,9 +12,9 @@ from skimage.metrics import structural_similarity as ssim
 from skimage.metrics import peak_signal_noise_ratio as psnr
 from scipy.fftpack import dct, idct
 import kagglehub
-
+import csv
 import warnings
-warnings.filterwarnings("ignore", message=".*kagglehub.*")
+warnings.filterwarnings("ignore")
 
 
 # Helper functions for DCT
@@ -107,32 +107,45 @@ def detection_accuracy(original_message, decoded_message):
     correct = sum(o == d for o, d in zip(original_message, decoded_message))
     return (correct / len(original_message)) * 100 if original_message else 0
 
+
 # Dataset processing
-def process_dct_dataset(image_folder, messages):
+def process_dct_dataset(image_folder, message):
     image_files = sorted([f for f in os.listdir(image_folder) if f.lower().endswith(('.png', '.bmp', '.jpg', '.jpeg'))])
     log = []
 
-    for img_file, message in zip(image_files, messages):
+    for img_file in image_files:
         img_path = os.path.join(image_folder, img_file)
         base, ext = os.path.splitext(img_file)
         stego_path = os.path.join(image_folder, f"{base}_dct_encoded.png")
 
-        encode_dct(img_path, message, stego_path)
-        ssim_val = compute_ssim(img_path, stego_path)
-        psnr_val = compute_psnr(img_path, stego_path)
-        decoded_msg = decode_dct(stego_path)
-        accuracy = detection_accuracy(message, decoded_msg)
+        try:
+            encode_dct(img_path, message, stego_path)
+            ssim_val = compute_ssim(img_path, stego_path)
+            psnr_val = compute_psnr(img_path, stego_path)
+            decoded_msg = decode_dct(stego_path)
+            accuracy = detection_accuracy(message, decoded_msg)
 
-        log.append({
-            "image": img_file,
-            "stego_image": os.path.basename(stego_path),
-            "message": message,
-            "decoded": decoded_msg,
-            "SSIM": round(ssim_val, 4),
-            "PSNR": round(psnr_val, 2),
-            "Accuracy": round(accuracy, 2)
-        })
+            log.append({
+                "image": img_file,
+                "stego_image": os.path.basename(stego_path),
+                "message": message,
+                "decoded": decoded_msg,
+                "SSIM": round(ssim_val, 4),
+                "PSNR": round(psnr_val, 2),
+                "Accuracy": round(accuracy, 2)
+            })
+        except Exception as e:
+            print(f"Error processing {img_file}: {e}")
 
+    # Save log to CSV
+    csv_path = os.path.join(image_folder, "steganalysis_log.csv")
+    with open(csv_path, mode='w', newline='', encoding='utf-8') as file:
+        writer = csv.DictWriter(file, fieldnames=["image", "stego_image", "message", "decoded", "SSIM", "PSNR", "Accuracy"])
+        writer.writeheader()
+        for entry in log:
+            writer.writerow(entry)
+
+    # Print log
     for entry in log:
         print(f"\nImage: {entry['image']}")
         print(f"Stego Image: {entry['stego_image']}")
@@ -141,13 +154,9 @@ def process_dct_dataset(image_folder, messages):
         print(f"SSIM: {entry['SSIM']}")
         print(f"PSNR: {entry['PSNR']} dB")
         print(f"Detection Accuracy: {entry['Accuracy']}%")
+    print("Processing successful and log saved to steganalysis_log.csv")
 
 dataset_path = kagglehub.dataset_download("saadghojaria/sneakers-image-dataset-pinterest")
-messages_list = [
-    "Hello Grace!",
-    "Welcome to IIT.",
-    "Steganography is fun.",
-    "AI enhances security.",
-    "Python scripting rocks!"
-]
-process_dct_dataset(dataset_path, messages_list)
+message = "Hello Grace! Welcome to IIT. Steganography is fun. AI enhances security. Python scripting rocks!"
+# dataset_path = "sneakers-image-dataset-pinterest/sneakers"
+process_dct_dataset(dataset_path, message)
