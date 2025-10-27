@@ -109,14 +109,27 @@ def detection_accuracy(original_message, decoded_message):
 
 
 # Dataset processing
-def process_dct_dataset(image_folder, message):
+def process_dct_dataset(dataset_path, message, output_base_folder="/output/"):
+    for root, dirs, files in os.walk(dataset_path):
+        # Process only immediate subdirectories of the dataset path
+        if root == dataset_path:
+            for sub_dir in dirs:
+                image_folder = os.path.join(root, sub_dir)
+                output_folder = os.path.join(output_base_folder, sub_dir)
+                print(f"Processing folder: {image_folder}")
+                process_images_in_folder(image_folder, message, output_folder)
+
+def process_images_in_folder(image_folder, message, output_folder):
     image_files = sorted([f for f in os.listdir(image_folder) if f.lower().endswith(('.png', '.bmp', '.jpg', '.jpeg'))])
     log = []
+
+    # Create output folder if it doesn't exist
+    os.makedirs(output_folder, exist_ok=True)
 
     for img_file in image_files:
         img_path = os.path.join(image_folder, img_file)
         base, ext = os.path.splitext(img_file)
-        stego_path = os.path.join(image_folder, f"{base}_dct_encoded.png")
+        stego_path = os.path.join(output_folder, f"{base}_dct_encoded.png")
 
         try:
             encode_dct(img_path, message, stego_path)
@@ -137,26 +150,21 @@ def process_dct_dataset(image_folder, message):
         except Exception as e:
             print(f"Error processing {img_file}: {e}")
 
-    # Save log to CSV
-    csv_path = os.path.join(image_folder, "steganalysis_log.csv")
-    with open(csv_path, mode='w', newline='', encoding='utf-8') as file:
-        writer = csv.DictWriter(file, fieldnames=["image", "stego_image", "message", "decoded", "SSIM", "PSNR", "Accuracy"])
-        writer.writeheader()
-        for entry in log:
-            writer.writerow(entry)
+    # Save log to CSV only if there are entries
+    if log:
+        csv_path = os.path.join(output_folder, "steganalysis_log.csv")
+        with open(csv_path, mode='w', newline='', encoding='utf-8') as file:
+            writer = csv.DictWriter(file, fieldnames=["image", "stego_image", "message", "decoded", "SSIM", "PSNR", "Accuracy"])
+            writer.writeheader()
+            for entry in log:
+                writer.writerow(entry)
 
-    # Print log
-    for entry in log:
-        print(f"\nImage: {entry['image']}")
-        print(f"Stego Image: {entry['stego_image']}")
-        print(f"Original Message: {entry['message']}")
-        print(f"Decoded Message: {entry['decoded']}")
-        print(f"SSIM: {entry['SSIM']}")
-        print(f"PSNR: {entry['PSNR']} dB")
-        print(f"Detection Accuracy: {entry['Accuracy']}%")
-    print("Processing successful and log saved to steganalysis_log.csv")
+        # Print log
+        print(f"Processing successful and log saved to {csv_path}")
+    else:
+        print(f"No images were successfully processed in {image_folder}. The log file was not created.")
+
 
 dataset_path = kagglehub.dataset_download("saadghojaria/sneakers-image-dataset-pinterest")
 message = "Hello Grace! Welcome to IIT. Steganography is fun. AI enhances security. Python scripting rocks!"
-# dataset_path = "sneakers-image-dataset-pinterest/sneakers"
 process_dct_dataset(dataset_path, message)
